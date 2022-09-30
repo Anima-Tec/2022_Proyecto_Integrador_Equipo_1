@@ -1,12 +1,18 @@
-import React from 'react'
+import React from "react";
+import FilterForm from "../components/FilterForm";
+import Map from "../components/Map";
+import NavBar from "../components/NavBar";
 
-
-const Home = () => {
+export default function Home() {
   return (
-     <div>
-      home page
-     </div>
-  )
+    <>
+      <NavBar />
+      <div className="flex">
+        <div className="w-full h-full">
+          <Map />
+        </div>
+        <FilterForm />
+      </div>
+    </>
+  );
 }
-
-export default Home
