@@ -29,7 +29,7 @@ const EditCentre = () => {
   useEffect(() => {
     formik.setFieldValue("careers", careers)
   }, [careers])
-  
+
   const formik = useFormik({
     initialValues: {
       centreName: "",
@@ -46,9 +46,14 @@ const EditCentre = () => {
 
     onSubmit: (values) => {
       const parsedValues = parseCentreFormValues(values)
-      console.log(parsedValues)
+      requestCentre(
+        `centres/centre?id=${centreValues.idCentre}`,
+        "PATCH",
+        parsedValues
+      )
     },
   })
+
   const searchCentreName = async (searchValue) => {
     if (checkIfExists(centresNames, searchValue)) {
       const values = await getCentreValues(searchValue)
@@ -64,6 +69,7 @@ const EditCentre = () => {
       })
     }
   }
+
   const getCareerData = (data) => {
     setCareers((item) => [...item, data])
   }
@@ -81,7 +87,7 @@ const EditCentre = () => {
       })
     )
   }
-  
+
   return (
     <div className="w-85% h-full bg-firstBg">
       <div className="w-95% h-full ml-auto">
