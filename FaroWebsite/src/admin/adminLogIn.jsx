@@ -16,7 +16,7 @@ const AdminLogIn = () => {
         setValidationState(false)
       }else{
        setValidationState(true)
-       localStorage.setItem("token", response)
+       localStorage.setItem("token", "sadhsajk")
       }
     })
   }

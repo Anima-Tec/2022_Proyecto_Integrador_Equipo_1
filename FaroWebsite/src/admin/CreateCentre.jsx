@@ -9,7 +9,7 @@ import {
 import CustomSelect from "../components/CustomSelect"
 import CustomMultiSelect from "../components/CustomMultiSelect"
 import { centreValidation } from "../utils/data"
-import { requestCentre, sendCreatedCentre } from "../api/api"
+import { requestCentre } from "../api/api"
 import { parseCentreFormValues } from "../utils/functions"
 import { ChevronDownIcon, MinusIcon } from "@heroicons/react/outline"
 
@@ -39,8 +39,11 @@ const CreateCentre = () => {
 
     onSubmit: (values) => {
       const parsedValues = parseCentreFormValues(values)
-      console.log(parsedValues)
-      // sendCreatedCentre(parsedValues).then((response) => console.log(response))
+      requestCentre(
+        `centres`,
+        "POST",
+        parsedValues
+      )
     },
   })
 

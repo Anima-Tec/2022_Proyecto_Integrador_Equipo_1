@@ -1,3 +1,5 @@
+import { Navigate } from "react-router-dom"
+
 export const isMobile = () => {
   return window.innerWidth <= 960 ? true : false
 }
@@ -36,4 +38,10 @@ export const preventEnterSubmit  = (event) => {
   if(event.key === 'Enter'){
     event.preventDefault();
   }
+}
+
+export const loginRedirection = (error) => {
+  console.log(error)
+  if (error === 401){
+  return <Navigate to="/login" />}
 }

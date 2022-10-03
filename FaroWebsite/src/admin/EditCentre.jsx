@@ -8,8 +8,8 @@ import {
 } from "../utils/data"
 import CustomSelect from "../components/CustomSelect"
 import { centreValidation } from "../utils/data"
-import { getCentresName, getCentreValues, requestCentre } from "../api/api"
-import { checkIfExists, parseCentreFormValues } from "../utils/functions"
+import { getCentreValues, requestCentre } from "../api/api"
+import { checkIfExists, loginRedirection, parseCentreFormValues } from "../utils/functions"
 import SearchButton from "../components/searchButton"
 import CustomMultiSelect from "../components/CustomMultiSelect"
 import { ChevronDownIcon, MinusIcon } from "@heroicons/react/outline"
@@ -21,9 +21,15 @@ const EditCentre = () => {
   const [showCareers, setShowCareers] = useState(false)
 
   useEffect(() => {
-    getCentresName().then((response) => {
-      setCentresNames(response.map((item) => item.centreName))
+    requestCentre(
+      `centres/centresName`,
+      "GET",
+    ).then((response) => {
+      setCentresNames(response?.map((item) => item.centreName))
     })
+    .catch((error) => {
+        console.log("Error: ", error);
+    });
   }, [])
 
   useEffect(() => {

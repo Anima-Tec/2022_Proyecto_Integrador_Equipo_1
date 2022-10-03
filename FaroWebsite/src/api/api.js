@@ -1,3 +1,5 @@
+import { Navigate } from "react-router-dom"
+
 const BASE_URL = process.env.REACT_APP_BASE_URL
 const devToken = localStorage.getItem("token")
 
@@ -25,6 +27,10 @@ export const requestCentre = async (path, method, body) =>
     },
     body: JSON.stringify(body)
   })
+    // if(error === 401){
+    //   localStorage.setItem("islogged", false)
+    //     return <Navigate to="/login" />
+    //   }
 
 export const sendCreatedCentre = (centreData) => {
 return fetch(`${BASE_URL}/createCentre`, {
@@ -59,6 +65,13 @@ export const getCentresName = () => {
   },
   }
   ).then((response) => response.json())
+  .catch((response) => {
+    console.log('boeenas')
+    // if(error === 401){
+    //   localStorage.setItem("islogged", false)
+    //     return <Navigate to="/login" />
+    //   }
+  })
 }
 
 export const getCentreValues = (centreId) => {

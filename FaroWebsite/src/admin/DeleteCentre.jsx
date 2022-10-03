@@ -5,24 +5,25 @@ import Modal from "react-modal"
 import { InformationCircleIcon } from "@heroicons/react/outline"
 
 const DeleteCentre = () => {
-  const [centresNames, setCentresNames] = useState([])
-  const [centreName, setCentreName] = useState([])
+  const [centresValues, setCentresValues] = useState([])
+  const [centre, setCentre] = useState([])
   const [confirmMenu, setConfirmMenu] = useState(false)
-  const [missingCentre, setMissingCentre] = useState(false)
+  const [missingCentre, setMissingCentre] = useState(false) 
 
   useEffect(() => {
     getCentresName().then((response) => {
-      setCentresNames(response.map((item) => item.centreName))
+      setCentresValues(response)
     })
   }, [])
 
   const handleSearch = (searchValue) => {
-    setCentreName(searchValue)
+    const matchCentre = centresValues.findIndex(item => {return item.centreName === searchValue})
+    setCentre(centresValues[matchCentre])
   }
 
   const handleClick = (event) => {
     event.preventDefault()
-    if (centreName) {
+    if (centre) {
       setMissingCentre(false)
       openModal()
     } else {
@@ -31,7 +32,8 @@ const DeleteCentre = () => {
   }
 
   const deleteCentre = () => {
-    requestCentre("/deleteCentre", "DELETE", centreName)
+    requestCentre( `centres/centre?id=${centre.idCentre}`,
+    "DELETE")
     closeModal()
   }
 
@@ -54,8 +56,8 @@ const DeleteCentre = () => {
         <div className="w-90% h-3/5 ">
           <h5 className="text-xl mb-2">Nombre del centro a eliminar </h5>
           <SearchButton
+            centresName={centresValues.map(item => item.centreName)}
             placeholder="Ingrese nombre del centro a editar"
-            centresName={centresNames}
             className={
               "dropdown flex w-96 h-11 bg-secondBg rounded-md border-2 border-solid border-firstColor text-white justify-between"
             }
