@@ -41,7 +41,6 @@ export const preventEnterSubmit  = (event) => {
 }
 
 export const loginRedirection = (error) => {
-  console.log(error)
   if (error === 401){
   return <Navigate to="/login" />}
 }
