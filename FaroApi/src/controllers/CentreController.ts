@@ -57,6 +57,7 @@ centres.get("/centresName", (req, res) => {
 });
 
 centres.get("/centre", (req, res) => {
+  console.log("HOLA?");
 
   const query = require("url").parse(req.url, true).query;
   const byId = query.id ? true : false;

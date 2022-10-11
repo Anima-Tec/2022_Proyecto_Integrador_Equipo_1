@@ -80,3 +80,8 @@ export interface CareerDB extends RowDataPacket {
   degree: string;
   duration: string;
 }
+
+export interface CareerNameDB extends RowDataPacket {
+  idCareer?: number;
+  careerName: string;
+}
