@@ -8,13 +8,13 @@ export class CareerSerializer {
       duration: data.duration,
       keywords: data.keywords,
       //careers: data.careers.map((car) => this.deSerializeCareer(car)),
-    }
+    };
   }
 
   static deSerializeCareersNames(data) {
     return {
       idCareer: data.idCareer,
       careerName: data.careerName,
-    }
+    };
   }
 }

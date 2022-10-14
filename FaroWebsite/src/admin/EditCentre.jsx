@@ -1,89 +1,52 @@
 import React, { useEffect, useState } from "react"
 import { useFormik } from "formik"
 import AddCarrer from "../components/AddCareer"
-import {
-  freeOptions,
-  schoolarLevelOptions,
-  centreScheduleOptions,
-} from "../utils/data"
+import {freeOptions, schoolarLevelOptions, centreScheduleOptions} from "../utils/data"
 import CustomSelect from "../components/CustomSelect"
 import { centreValidation } from "../utils/data"
+import { getCentresName, getCentreValues } from "../api/api"
 import { checkIfExists, parseCentreFormValues } from "../utils/functions"
 import SearchButton from "../components/searchButton"
 import CustomMultiSelect from "../components/CustomMultiSelect"
-import { ChevronDownIcon, MinusIcon } from "@heroicons/react/24/outline"
-import CentreController from "../networking/controllers/Centre-Controller"
-import CareerController from "../networking/controllers/Career-Controller"
-import { CareerSerializer } from "../networking/serializers/career-serializer"
-import { useNavigate } from "react-router-dom"
-import CustomToast from "../components/CustomToast"
 
 const EditCentre = () => {
   const [centresNames, setCentresNames] = useState([])
-  const [centreValues, setCentreValues] = useState([])
+  // const [centreValues, setCentreValues] = useState([]);
   const [careers, setCareers] = useState([])
-  const [showCareers, setShowCareers] = useState(false)
-  const [centreUpdated, setCentreUpdated] = useState(false)
-  const [showToast, setShowToast] = useState(null)
-  let navigate = useNavigate()
 
   useEffect(() => {
-    async function fetchCentres() {
-      const centres = await CentreController.getCentres()
-      setCentresNames(centres)
-    }
-    fetchCentres()
+    getCentresName().then((response) => {
+      setCentresNames(response.map((item) => item.centreName))
+    })
   }, [])
-
-  useEffect(() => {
-    formik.setFieldValue("careers", careers)
-  }, [careers])
 
   const formik = useFormik({
     initialValues: {
       centreName: "",
-      addressStreet: "",
-      addressNumber: "",
+      address: "",
       free: null,
-      phoneNumber: "",
-      schoolarLevel: "",
-      centreSchedules: [],
+      centrePhone: "",
+      schoolarLevel: [],
+      centreSchedule: [],
       careers: {},
+      pagelink: "",
     },
 
     validationSchema: centreValidation(),
 
-    onSubmit: async (values) => {
-      const parsedValues = await parseCentreFormValues(values)
-      CentreController.updateCentre(centreValues.idCentre, parsedValues)
-        .then((response) => {
-          if (response === 200) {
-            setCentreUpdated(true)
-            setShowToast(true)
-            handleResetForm()
-          } else {
-            setCentreUpdated(false)
-            setShowToast(true)
-          }
-        })
-        .catch((err) => {
-          if (err.status === 401) {
-            navigate("/login")
-          }
-        })
+    onSubmit: (values) => {
+      const parsedValues = parseCentreFormValues(values)
     },
   })
   const searchCentreName = async (searchValue) => {
-    const centres = centresNames.map((centre) => centre.centreName)
-    if (checkIfExists(centres, searchValue)) {
-      const values = await CentreController.getCentreByName(searchValue)
-      setCentreValues(values)
+    if (checkIfExists(centresNames, searchValue)) {
+      const values = await getCentreValues(searchValue)
       Object.entries(values).forEach((item) => {
         formik.setFieldValue(item[0], item[1])
         if (item[0] === "careers") {
           setCareers(item[1])
         }
-        if (item[0] === "centreSchedules") {
+        if (item[0] === "centreSchedule") {
           formik.setFieldValue(item[0], [{ value: item[1], label: item[1] }])
         }
       })
@@ -91,36 +54,11 @@ const EditCentre = () => {
   }
   const getCareerData = (data) => {
     setCareers((item) => [...item, data])
-  }
-
-  const handleResetForm = () => {
-    formik.resetForm()
-    setCareers([])
-  }
-
-  const deleteCareer = (careerName) => {
-    setCareers(
-      careers.filter((career) => {
-        if (career.careerName === careerName && CareerSerializer.idCareer) {
-          CareerController.deleteCareer(career.idCareer, centreValues.idCentre)
-        }
-        return career.careerName !== careerName
-      })
-    )
+    formik.setFieldValue("careers", careers)
   }
 
   return (
     <div className="w-85% h-full bg-firstBg">
-      <CustomToast
-        show={showToast}
-        close={() => setShowToast(false)}
-        notifi={
-          centreUpdated
-            ? "centro editado correctamente"
-            : "Hubo un problema, intente nuevamente"
-        }
-        state={centreUpdated}
-      />
       <div className="w-95% h-full ml-auto">
         <form className="w-full h-full" onSubmit={formik.handleSubmit}>
           <div className="w-full h-1/5 flex items-center">
@@ -136,7 +74,7 @@ const EditCentre = () => {
               </label>
               <SearchButton
                 placeholder="Ingrese nombre del centro a editar"
-                centresName={centresNames.map((centre) => centre.centreName)}
+                centresName={centresNames}
                 className={
                   "dropdown flex w-full h-11 bg-secondBg rounded-md border-2 border-solid border-firstColor text-white justify-between"
                 }
@@ -170,42 +108,21 @@ const EditCentre = () => {
               <label className="text-base font-normal mb-2" htmlFor="address">
                 Dirección
               </label>
-              <div className="w-full flex flex">
-                <div className="w-4/5 flex flex-col">
-                  <input
-                    className="w-full h-11 pl-4 bg-secondBg rounded-l-md border-2 border-firstColor"
-                    name="addressStreet"
-                    placeholder="Agregar dirección del centro"
-                    onChange={formik.handleChange}
-                    value={formik.values.addressStreet}
-                    type="text"
-                  />
-                  {formik.touched.addressStreet && formik.errors.addressStreet && (
-                    <div className="relative">
-                      <p className="errorMessage absolute">
-                        {formik.errors.addressStreet}
-                      </p>
-                    </div>
-                  )}
+              <input
+                className="w-full h-11 pl-4 bg-secondBg rounded-md border-2 border-firstColor"
+                name="address"
+                placeholder="Agregar dirección del centro"
+                onChange={formik.handleChange}
+                value={formik.values.address}
+                type="text"
+              />
+              {formik.touched.address && formik.errors.address && (
+                <div className="relative">
+                  <p className="errorMessage absolute">
+                    {formik.errors.address}
+                  </p>
                 </div>
-                <div className="w-auto flex flex-col">
-                  <input
-                    className="w-16 h-11 pl-2 bg-secondBg rounded-r-md border-2 border-firstColor"
-                    name="addressNumber"
-                    placeholder="Puerta"
-                    onChange={formik.handleChange}
-                    value={formik.values.addressNumber}
-                    type="number"
-                  />
-                  {formik.touched.addressNumber && formik.errors.addressNumber && (
-                    <div>
-                      <p className="errorMessage absolute">
-                        {formik.errors.addressNumber}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
+              )}
             </div>
             <div className="w-4/5 flex flex-col row-start-3">
               <label className="text-base font-normal mb-2" htmlFor="free">
@@ -227,22 +144,22 @@ const EditCentre = () => {
             <div className="w-4/5 flex flex-col row-start-3">
               <label
                 className="text-base font-normal mb-2"
-                htmlFor="phoneNumber"
+                htmlFor="centrePhone"
               >
                 Teléfono
               </label>
               <input
                 className="w-full h-11 pl-4 bg-secondBg rounded-md border-2 border-firstColor"
-                name="phoneNumber"
+                name="centrePhone"
                 placeholder="Agregar teléfono del centro"
                 onChange={formik.handleChange}
-                value={formik.values.phoneNumber}
+                value={formik.values.centrePhone}
                 type="number"
               />
-              {formik.touched.phoneNumber && formik.errors.phoneNumber && (
+              {formik.touched.centrePhone && formik.errors.centrePhone && (
                 <div className="relative">
                   <p className="errorMessage absolute">
-                    {formik.errors.phoneNumber}
+                    {formik.errors.centrePhone}
                   </p>
                 </div>
               )}
@@ -274,64 +191,60 @@ const EditCentre = () => {
             <div className="w-4/5 flex flex-col row-start-4">
               <label
                 className="text-base font-normal mb-2"
-                htmlFor="centreSchedules"
+                htmlFor="centreSchedule"
               >
                 Horarios
               </label>
               <CustomMultiSelect
                 defaultValue="no select"
-                name={"centreSchedules"}
+                name={"centreSchedule"}
                 isMulti
                 options={centreScheduleOptions}
-                value={formik.values.centreSchedules}
+                value={formik.values.centreSchedule}
                 onChange={(value) =>
-                  formik.setFieldValue("centreSchedules", value)
+                  formik.setFieldValue("centreSchedule", value)
                 }
                 placeholder={"Agregar los horarios del centro"}
               />
-              {formik.touched.centreSchedules && formik.errors.centreSchedules && (
+              {formik.touched.centreSchedule && formik.errors.centreSchedule && (
                 <div className="relative">
                   <p className="errorMessage absolute">
-                    {formik.errors.centreSchedules}
+                    {formik.errors.centreSchedule}
                   </p>
                 </div>
               )}
             </div>
             <div className="w-4/5 flex flex-col row-start-5">
               <h1 className="text-base font-normal">Carreras</h1>
-              <div className="flex flex-col">
-                <div className="flex items-center w-full h-11 mt-4 bg-secondBg rounded-md border-2 border-solid border-firstColor text-white dropdown">
-                  <p className="text-placeHolderColor text-base my-auto pl-4">
-                    Añadir carrera
-                  </p>
-                  <div className="flex items-center ml-auto">
-                    {careers.length > 0 && (
-                      <ChevronDownIcon
-                        className="w-8 ml-auto"
-                        onClick={() => setShowCareers(!showCareers)}
-                      />
-                    )}
-                    <AddCarrer onClick={getCareerData} />
-                  </div>
-                  {showCareers && (
-                    <div className="w-full bg-blackOpacity z-10 dropdown-content">
-                      {careers.map(({ careerName }) => (
-                        <div key={careerName} className="flex">
-                          <p className="text-white">{careerName}</p>
-                          <MinusIcon
-                            onClick={() => deleteCareer(careerName)}
-                            className="w-8 ml-auto"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+              <div className="flex w-full h-11 mt-4 bg-secondBg rounded-md border-2 border-solid border-firstColor text-white justify-between">
+                <p className="text-placeHolderColor text-base my-auto pl-4">
+                  Añadir carrera
+                </p>
+                <AddCarrer onSubmit={getCareerData} careers={careers} />
               </div>
               {formik.touched.careers && formik.errors.careers && (
                 <div className="relative">
                   <p className="errorMessage absolute">
                     {formik.errors.careers}
+                  </p>
+                </div>
+              )}
+            </div>
+            <div className="w-4/5 flex flex-col row-start-5">
+              <label className="text-base font-normal mb-2" htmlFor="pagelink">
+                Link a la página
+              </label>
+              <input
+                className="w-full h-11 pl-4 bg-secondBg rounded-md border-2 border-firstColor"
+                name="pagelink"
+                placeholder="Agregar página del centro"
+                onChange={formik.handleChange}
+                value={formik.values.pagelink}
+              />
+              {formik.touched.pagelink && formik.errors.pagelink && (
+                <div className="relative">
+                  <p className="errorMessage absolute">
+                    {formik.errors.pagelink}
                   </p>
                 </div>
               )}

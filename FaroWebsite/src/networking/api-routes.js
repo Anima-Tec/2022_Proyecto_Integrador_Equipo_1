@@ -1,15 +1,13 @@
 const API_ROUTES = {
-  LOGIN: () => `/login`,
-  CENTRES_COORDINATES: () => `/centres/CentresCoordinates`,
+  EXAMPLE: "/example",
+  EXAMPLE_ID: (id) => `/example/${id}`,
+  CENTRES_COORDINATES: () => `/centres/centresCoordinates`,
+  CENTRES_NAMES: () => `/centres/centresName`,
   CENTRE: (id) => `/centres/centre?id=${id}`,
-  CENTRES: () => `centres/centresName`,
-  CENTRE_BASE: () => "/centres",
+  CREATE_CENTRE: `/centres`,
+  CAREERS: () => `/careers/`,
   FUZZY_CENTRE: (name) => `/centres/centre?nameLike=${name}`,
-  CENTRE_BY_NAME: (name) => `/centres/centre?name=${name}`,
   FUZZY_CAREER: (name) => `/careers/career?nameLike=${name}`,
-  CAREER: (id) => `careers/career?idCareer=${id}`,
-  DELETE_CAREER: (idCareer, idCentre) =>
-    `careers/career?idCareer=${idCareer}&idCentre=${idCentre}`,
-}
+};
 
-export { API_ROUTES }
+export { API_ROUTES };

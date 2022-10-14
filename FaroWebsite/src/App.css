@@ -2,36 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  overflow: scroll;
-  overflow-x: hidden;
-  scrollbar-width: none;
-}
-::-webkit-scrollbar {
-  width: 0;  /* Remove scrollbar space */
-  background: transparent;  /* Optional: just make scrollbar invisible */
-}
-
 :root {
   --primary-color: #0ea5e9;
   --error-color: #d83a52;
-  --success-color: #13b6a6;
   --first-background: #20233c;
   --second-background: #383b50;
   --opacity-black: rgba(0, 0, 0, 0.6);
+  --second-background-transparent: rgb(56, 59, 80, 0.5);
   --gray-color: #c5c7d0;
-  --back-azulOs: #20233C;
-  --back-azulCla: #7882F3;
 }
 
-input[type='number']::-webkit-inner-spin-button,
-input[type='number']::-webkit-outer-spin-button {
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-input[type='number'] {
+input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.transparent-secondBg-background {
+  background-color: var(--second-background-transparent);
 }
 
 .normal-button {
@@ -163,9 +155,6 @@ input[type='number'] {
 .react-select__value-container {
   padding-left: 1rem !important;
 }
-.react-select__input-container {
-  color: #fff !important;
-}
 
 .react-select__placeholder {
   color: #9ca3af !important;
@@ -183,7 +172,7 @@ input[type='number'] {
   background-color: rgba(14, 165, 233, 0.8) !important;
 }
 
-.react-select_multi-value_label {
+.react-select__multi-value__label {
   color: var(--gray-color) !important;
 }
 
@@ -197,81 +186,4 @@ input[type='number'] {
 
 .react-select__single-value {
   color: white !important;
-}
-
-/* style About Us*/
-.button {
-  background-color: #0EA5E9;
-  color: black;
-  padding: 15px 28px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 12px;
-  border-radius: 12px;
-  border: 1px solid #0EA5E9;
-}
-
-.button:hover {
-  -webkit-transition-duration: 0.4s;
-  transition-duration: 0.4s;
-  transition-duration: 0.4s;
-  background-color: transparent;
-  color: white;
-}
-
-.backgroundAboutUs{
-  background: linear-gradient(var(--back-azulOs),var(--back-azulCla));
-}
-
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-  overflow-y: hidden;
-}
-.Toastify__toast--error {
-  border: 1px solid #EB5757;
-  border-radius: 5px !important;
-  background-color:var(--error-color) !important;
-}
-.Toastify__toast--error::after {
-  position: absolute;
-  color: #ffffff !important;
-  font-size: 15px;
-  font-weight: 700;
-  left:265px;
-  padding-top: 14px !important;
-}
-.Toastify__toast--error::before {
-  position:relative; 
-  z-index:100000;
-  left:12px;
-  top:6px;
-}
-.Toastify__toast--success {
-  border: 1px solid #3A9EA5 !important;
-  border-radius: 5px !important;
-  background-color:var(--success-color) !important; 
-}
-.Toastify__toast--success::before {
-  position:relative; 
-  z-index:100000;
-  left:12px;
-  top:6px;
-}
-.Toastify__toast--success::after {
-  position: absolute;
-  color: #ffffff !important;
-  font-weight: 700;
-  font-size: 0.875rem !important;
-  left:265px;
-  padding-top: 14px !important;
-}
-
-.toastBody {
-  color: #ffff; 
-  font-size: 0.875rem !important;
-}
-
-.toastProgress {
-  background: #fff !important;
 }
