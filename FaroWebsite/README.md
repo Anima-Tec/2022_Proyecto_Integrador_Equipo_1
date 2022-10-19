@@ -39,8 +39,6 @@ Despues vamos a github y hacemos el pr de la branch que acabamos de crear a `dev
 
 ## Libraries
 
--- Web --
-
 `Create React App` https://create-react-app.dev/docs/getting-started
 
 `React router` https://reactrouter.com/docs/en/v6/getting-started/tutorial

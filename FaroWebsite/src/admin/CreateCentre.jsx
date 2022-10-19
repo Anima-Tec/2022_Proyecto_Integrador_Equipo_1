@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import AddCarrer from "../components/AddCareer"
 import { useFormik } from "formik"
 import {
@@ -9,39 +9,86 @@ import {
 import CustomSelect from "../components/CustomSelect"
 import CustomMultiSelect from "../components/CustomMultiSelect"
 import { centreValidation } from "../utils/data"
-import { sendCreatedCentre } from "../api/api"
 import { parseCentreFormValues } from "../utils/functions"
+import { ChevronDownIcon, MinusIcon } from "@heroicons/react/24/outline"
+import CentreController from "../networking/controllers/Centre-Controller"
+import CustomToast from "../components/CustomToast"
+import { useNavigate } from "react-router-dom"
 
 const CreateCentre = () => {
   const [careers, setCareers] = useState([])
+  const [showCareers, setShowCareers] = useState(false)
+  const [addressState, setAddressState] = useState(false)
+  const [centreAdded, setCentreAdded] = useState(false)
+  const [showToast, setShowToast] = useState(null)
+  let navigate = useNavigate()
+
+  useEffect(() => {
+    formik.setFieldValue("careers", careers)
+  }, [careers])
 
   const formik = useFormik({
     initialValues: {
       centreName: "",
-      address: "",
+      addressStreet: "",
+      addressNumber: "",
       free: null,
-      centrePhone: "",
-      schoolarLevel: [],
-      centreSchedule: [],
+      phoneNumber: "",
+      schoolarLevel: "",
+      centreSchedules: [],
       careers: {},
-      pagelink: "",
     },
 
     validationSchema: centreValidation(),
 
-    onSubmit: (values) => {
-      const parsedValues = parseCentreFormValues(values)
-      sendCreatedCentre(parsedValues).then((response) => console.log(response))
+    onSubmit: async (values) => {
+      const parsedValues = await parseCentreFormValues(values)
+      if (parsedValues.latitude && parsedValues.longitude !== undefined) {
+        setAddressState(false)
+        CentreController.createCentre(parsedValues)
+          .then((response) => {
+            if (response === 200) {
+              setCentreAdded(true)
+              setShowToast(true)
+              handleResetForm()
+            }
+          })
+          .catch((err) => {
+            if (err.status === 401) {
+              navigate("/login")
+            }
+            setCentreAdded(false)
+            setShowToast(true)
+          })
+      } else {
+        setAddressState(true)
+      }
+      setCentreAdded(null)
+      setShowToast(false)
     },
   })
 
   const getCareerData = (data) => {
     setCareers((item) => [...item, data])
-    formik.setFieldValue("careers", careers)
+  }
+
+  const handleResetForm = () => {
+    formik.resetForm()
+    setCareers([])
   }
 
   return (
     <div className="w-85% h-full bg-firstBg">
+      <CustomToast
+        show={showToast}
+        close={() => setShowToast(false)}
+        notifi={
+          centreAdded
+            ? "centro añadido"
+            : "Hubo un problema, intente nuevamente"
+        }
+        state={centreAdded}
+      />
       <div className="w-95% h-full ml-auto">
         <form className="w-full h-full" onSubmit={formik.handleSubmit}>
           <div className="w-full h-1/5 flex items-center">
@@ -71,31 +118,58 @@ const CreateCentre = () => {
                 </div>
               )}
             </div>
-            <div className="w-4/5 flex flex-col">
-              <label className="text-base font-normal mb-2" htmlFor="address">
-                Dirección
-              </label>
-              <input
-                className="w-full h-11 pl-4 bg-secondBg rounded-md border-2 border-firstColor"
-                name="address"
-                placeholder="Agregar dirección del centro"
-                onChange={formik.handleChange}
-                value={formik.values.address}
-                type="text"
-              />
-              {formik.touched.address && formik.errors.address && (
-                <div className="relative">
-                  <p className="errorMessage absolute">
-                    {formik.errors.address}
-                  </p>
+            <div className="w-4/5 flex">
+              <div className="w-full flex flex-col">
+                <label className="text-base font-normal mb-2" htmlFor="address">
+                  Direccion
+                </label>
+                <div className="w-full flex flex">
+                  <div className="w-4/5 flex flex-col">
+                    <input
+                      className="w-full h-11 pl-4 bg-secondBg rounded-l-md border-2 border-firstColor"
+                      name="addressStreet"
+                      placeholder="Agregar dirección del centro"
+                      onChange={formik.handleChange}
+                      value={formik.values.addressStreet}
+                      type="text"
+                    />
+                    {((formik.touched.addressStreet &&
+                      formik.errors.addressStreet) ||
+                      (formik.touched.addressNumber &&
+                        formik.errors.addressNumber)) && (
+                      <div className="relative">
+                        <p className="errorMessage absolute">
+                          La Direccion no es valida
+                        </p>
+                      </div>
+                    )}
+                    {addressState && (
+                      <div className="relative">
+                        <p className="errorMessage absolute">
+                          Direccion incorrecta, inserte otra
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                  <div className="w-auto flex flex-col">
+                    <input
+                      className="w-16 h-11 pl-2 bg-secondBg rounded-r-md border-2 border-firstColor"
+                      name="addressNumber"
+                      placeholder="Puerta"
+                      onChange={formik.handleChange}
+                      value={formik.values.addressNumber}
+                      type="number"
+                    />
+                  </div>
                 </div>
-              )}
+              </div>
             </div>
             <div className="w-4/5 flex flex-col">
               <label className="text-base font-normal mb-2" htmlFor="free">
                 Privado/Publico
               </label>
               <CustomSelect
+                defaultValue={{ value: "Sin elegir", label: "sin elegir" }}
                 name={"free"}
                 options={freeOptions}
                 value={formik.values.free}
@@ -111,22 +185,22 @@ const CreateCentre = () => {
             <div className="w-4/5 flex flex-col">
               <label
                 className="text-base font-normal mb-2"
-                htmlFor="centrePhone"
+                htmlFor="phoneNumber"
               >
                 Teléfono
               </label>
               <input
                 className="w-full h-11 pl-4 bg-secondBg rounded-md border-2 border-firstColor"
-                name="centrePhone"
+                name="phoneNumber"
                 placeholder="Agregar teléfono del centro"
                 onChange={formik.handleChange}
-                value={formik.values.centrePhone}
+                value={formik.values.phoneNumber}
                 type="number"
               />
-              {formik.touched.centrePhone && formik.errors.centrePhone && (
+              {formik.touched.phoneNumber && formik.errors.phoneNumber && (
                 <div className="relative">
                   <p className="errorMessage absolute">
-                    {formik.errors.centrePhone}
+                    {formik.errors.phoneNumber}
                   </p>
                 </div>
               )}
@@ -139,6 +213,7 @@ const CreateCentre = () => {
                 Grado
               </label>
               <CustomSelect
+                defaultValue="no select"
                 name={"schoolarLevel"}
                 options={schoolarLevelOptions}
                 value={formik.values.schoolarLevel}
@@ -158,36 +233,63 @@ const CreateCentre = () => {
             <div className="w-4/5 flex flex-col">
               <label
                 className="text-base font-normal mb-2"
-                htmlFor="centreSchedule"
+                htmlFor="centreSchedules"
               >
                 Horarios
               </label>
               <CustomMultiSelect
                 defaultValue="no select"
-                name={"centreSchedule"}
+                name={"centreSchedules"}
                 isMulti
                 options={centreScheduleOptions}
-                value={formik.values.centreSchedule}
+                value={formik.values.centreSchedules}
                 onChange={(value) =>
-                  formik.setFieldValue("centreSchedule", value)
+                  formik.setFieldValue("centreSchedules", value)
                 }
                 placeholder={"Agregar los horarios del centro"}
               />
-              {formik.touched.centreSchedule && formik.errors.centreSchedule && (
+              {formik.touched.centreSchedules && formik.errors.centreSchedules && (
                 <div className="relative">
                   <p className="errorMessage absolute">
-                    {formik.errors.centreSchedule}
+                    {formik.errors.centreSchedules}
                   </p>
                 </div>
               )}
             </div>
             <div className="w-4/5 flex flex-col">
               <h1 className="text-base font-normal">Carreras</h1>
-              <div className="flex w-full h-11 mt-4 bg-secondBg rounded-md border-2 border-solid border-firstColor text-white justify-between">
+              <div className="flex w-full h-11 mt-4 bg-secondBg rounded-md border-2 border-solid border-firstColor text-white justify-between dropdown">
                 <p className="text-placeHolderColor text-base my-auto pl-4">
                   Añadir carrera
                 </p>
-                <AddCarrer onSubmit={getCareerData} />
+                <div className="flex items-center ml-auto">
+                  {careers.length > 0 && (
+                    <ChevronDownIcon
+                      className="w-8 ml-auto"
+                      onClick={() => setShowCareers(!showCareers)}
+                    />
+                  )}
+                  <AddCarrer onClick={getCareerData} />
+                </div>
+                {showCareers && (
+                  <div className="w-full bg-blackOpacity z-10 dropdown-content">
+                    {careers.map(({ careerName }) => (
+                      <div key={careerName} className="flex">
+                        <p className="text-white">{careerName}</p>
+                        <MinusIcon
+                          onClick={() =>
+                            setCareers(
+                              careers.filter(
+                                (career) => career.careerName !== careerName
+                              )
+                            )
+                          }
+                          className="w-8 ml-auto"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               {formik.touched.careers && formik.errors.careers && (
                 <div className="relative">
@@ -197,27 +299,8 @@ const CreateCentre = () => {
                 </div>
               )}
             </div>
-            <div className="w-4/5 flex flex-col">
-              <label className="text-base font-normal mb-2" htmlFor="pagelink">
-                Link a la página
-              </label>
-              <input
-                className="w-full h-11 pl-4 bg-secondBg rounded-md border-2 border-firstColor"
-                name="pagelink"
-                placeholder="Agregar página del centro"
-                onChange={formik.handleChange}
-                value={formik.values.pagelink}
-              />
-              {formik.touched.pagelink && formik.errors.pagelink && (
-                <div className="relative">
-                  <p className="errorMessage absolute">
-                    {formik.errors.pagelink}
-                  </p>
-                </div>
-              )}
-            </div>
           </div>
-          <div className="w-full h-1/5 flex items-center">
+          <div className="w-full flex flex-col">
             <button
               className={`text-white cursor-pointer ml-auto mr-24 ${
                 !formik.isValid && formik.submitCount > 0

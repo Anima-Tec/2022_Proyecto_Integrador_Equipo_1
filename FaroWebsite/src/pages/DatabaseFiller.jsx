@@ -20,7 +20,7 @@ const DatabaseFiller = () => {
   }
 
   return (
-    <div className="w-screen h-screen text-white flex">
+    <div className="w-screen h-screen text-white flex min-h-md">
       <div className="w-25% h-full bg-secondBg flex flex-col">
         <div className="flex mx-auto mt-4">
           <img className="w-24" src={farologo} alt="Faro logo" />

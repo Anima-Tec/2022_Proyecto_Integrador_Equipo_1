@@ -33,11 +33,9 @@ para subir lo que acabamos de commitear:
 
 Despues vamos a github y hacemos el pr de la branch que acabamos de crear a `develop` y asignamos como reviewers a todos los del equipo y esperamos a que alguien nos de el ok para mergear esa branch a `develop`
 
-## Instalación y ejecución
-Para instalar hacemos `npm install` para instalar todas las librerias
-Para ejecutar hacemos `npm run dev` para correr el backend
-    
 ## Tecnologias
+
+`React` https://es.reactjs.org/docs/getting-started.html
 
 `Node.js` https://nodejs.org/en/ 
 
@@ -60,3 +58,14 @@ Para ejecutar hacemos `npm run dev` para correr el backend
 `mysql` https://www.npmjs.com/package/mysql
 
 `mysql2` https://www.npmjs.com/package/mysql2
+
+`Create React App` https://create-react-app.dev/docs/getting-started
+
+`React router` https://reactrouter.com/docs/en/v6/getting-started/tutorial
+
+`Formik` https://formik.org/
+
+`React-Modal` https://reactcommunity.org/react-modal/#general-usage example: https://www.npmjs.com/package/react-modal#api-documentation
+
+`React-Select` https://react-select.com/home
+

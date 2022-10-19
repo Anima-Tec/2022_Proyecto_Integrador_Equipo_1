@@ -8,7 +8,8 @@ module.exports = {
       'md': { max: '768px' },
       'lg': { max: '1024px' },
       'xl': { max: '1440px' },
-      '2xl': { max: '1920px' }
+      '2xl': { max: '1920px' },
+      'smMinH': { 'raw': '(max-height: 800px)' },
     },
     fontSize: {
       'sm': '0.75', //12px
@@ -33,6 +34,10 @@ module.exports = {
       },
       height: {
         '1px' : '1px',
+      },
+      minHeight: {
+        'sm' : '600px',
+        'md' : '716px'
       },
       fontFamily: {
         'roboto': ['Roboto']

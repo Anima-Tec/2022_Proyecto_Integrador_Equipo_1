@@ -1,10 +1,10 @@
 import React from 'react'
-import { ExclamationIcon } from '@heroicons/react/outline'
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline"
 
 const MobileErrorView = () => {
   return (
-    <div className="w-screen h-screen flex flex-col items-center justify-center bg-firstBg text-center">
-      <ExclamationIcon className="w-24 text-grayColor" />
+    <div className="w-screen h-screen flex flex-col items-center justify-center bg-firstBg text-center text-white">
+      <ExclamationTriangleIcon className="w-24 text-firstColor" />
       <h1 className="text-xl font-bold text-white my-4">
         Página no disponible
       </h1>

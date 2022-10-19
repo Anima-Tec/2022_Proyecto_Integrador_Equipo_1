@@ -1,7 +1,7 @@
-import { ChevronDownIcon } from "@heroicons/react/outline";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import React, { useState, useEffect } from "react";
 
-const SearchButton = ({ placeholder, centresName, searchValue, className }) => {
+const SearchButton = ({ placeholder, centresName, searchValue, className, clearValue }) => {
   const [search, setSearch] = useState("");
   const [showCentres, setShowCentres] = useState(false)
 
@@ -9,6 +9,11 @@ const SearchButton = ({ placeholder, centresName, searchValue, className }) => {
     searchValue(search)
   }, [search])
   
+  useEffect(() =>{
+    if(clearValue){
+      setSearch('')
+    }
+  },[clearValue])
 
   const results = !search
     ? centresName

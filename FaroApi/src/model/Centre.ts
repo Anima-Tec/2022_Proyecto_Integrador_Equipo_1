@@ -137,6 +137,12 @@ export interface schoolarLevelDB extends RowDataPacket {
   schoolarLevel: string;
 }
 
+export interface CentreCoordinates extends RowDataPacket {
+  idCentre?: number;
+  latitude: number;
+  longitude: number;
+}
+
 export interface CentreDB extends RowDataPacket {
   idCentre?: number;
   centreName: string;
@@ -147,5 +153,5 @@ export interface CentreDB extends RowDataPacket {
   latitude: number;
   longitude: number;
   phoneNumber: number;
-  centreSchedules: string[];
+  centreSchedules: string;
 }
