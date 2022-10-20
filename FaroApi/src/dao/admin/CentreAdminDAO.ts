@@ -6,7 +6,7 @@ import { CareerAdminDAO } from "./CareerAdminDAO";
 import { CareerPublicDAO } from "../public/CareerPublicDAO";
 import { createCareerVinculateCentreService } from "../../services/CreateCareerVinculateCentreService";
 import { CentrePublicDAO } from "../public/CentrePublicDAO";
-let centrePublicDB = new CentrePublicDAO();
+const centrePublicDB = new CentrePublicDAO();
 const careerAdminDB = new CareerAdminDAO();
 const careerPublicDB = new CareerPublicDAO();
 
@@ -61,17 +61,16 @@ export class CentreAdminDAO {
               centre.getSchoolarLevel()
             );
             /*For every given career vinculate it to the centre*/
-            if (centreCareers.length > 0) {
-              createCareerVinculateCentreService(
+            if (centreCareers.length > 0)
+              await createCareerVinculateCentreService(
                 centreCareers,
                 res.insertId
-              ).then(() => {
-                centrePublicDB
-                  .getCentre(res.insertId)
-                  .then((centre) => resolve(centre!))
-                  .catch(reject);
-              });
-            }
+              );
+
+            centrePublicDB
+              .getCentre(res.insertId)
+              .then((centre) => resolve(centre!))
+              .catch(reject);
           }
         }
       );

@@ -1,8 +1,7 @@
 drop  database if exists FARO;
 create database FARO;
 use FARO;
--- user 'DBAdmin'@'localhost' identified by 'deC3JGy4Pu';
--- drop user 'DBAdmin'@'localhost';
+-- create user 'DBAdmin'@'localhost' identified by 'deC3JGy4Pu';
 -- create user 'FaroUser'@'localhost'; 
 
 create table CENTRE(

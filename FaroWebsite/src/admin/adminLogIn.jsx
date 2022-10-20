@@ -4,29 +4,36 @@ import { isMobile } from "../utils/functions"
 import MobileErrorView from "../utils/mobileErrorView"
 import { useNavigate } from "react-router-dom"
 import AdminController from "../networking/controllers/Admin-Controller"
+import CustomToast from "../components/CustomToast"
 
 const AdminLogIn = () => {
-  const [validationState, setValidationState] = useState()
+  const [validationState, setValidationState] = useState(null)
+  const [showToast, setShowToast] = useState(null)
 
   let navigate = useNavigate()
 
   const handleLogIn = async ({ user, password }) => {
-    const validation = await AdminController.handleLogin(user, password)
-    if (validation.LOGIN_FAILED) {
-      setValidationState(false)
-    } else {
+    AdminController.handleLogin(user, password).then((res) => {
       setValidationState(true)
-      localStorage.setItem("token", validation)
+      setShowToast(true)
+      localStorage.setItem("token", res)
+    }).catch((err) => {
+     setValidationState(false)
+     setShowToast(true)
+    })
     }
-  }
+  
   useEffect(() => {
     if (validationState) {
       localStorage.setItem("islogged", true)
-      navigate("/database-filler")
+      console.log(validationState)
+      setTimeout(() => {
+        navigate("/database-filler")
+      },1000)
     } else {
       localStorage.setItem("islogged", false)
     }
-  }, [validationState, navigate])
+  }, [validationState])
 
   const handleSubmitLogIn = (event) => {
     event.preventDefault()
@@ -42,6 +49,16 @@ const AdminLogIn = () => {
   } else {
     return (
       <div className="flex h-screen min-h-md overflow-y-scroll">
+      <CustomToast
+        show={showToast}
+        close={() => setShowToast(false)}
+        notifi={
+           validationState
+            ? "Iniciando sesión..."
+            : "Usuario o contraseña invalido"
+        }
+        state={validationState}
+      />
         <div className="w-1/2 h-full flex justify-center items-center bg-secondBg">
           <div className="flex items-end">
             <img className="w-24 mr-4" src={farologo} alt="Faro logo" />
@@ -71,7 +88,7 @@ const AdminLogIn = () => {
                 type="password"
               />
               {validationState === false && (
-                <p className="errorMessage">Usuario o contraseña incorrectos</p>
+                <p className="errorMessage absolute">Usuario o contraseña incorrectos</p>
               )}
             </div>
             <div className="flex justify-center mt-48 smMinH:mt-24">

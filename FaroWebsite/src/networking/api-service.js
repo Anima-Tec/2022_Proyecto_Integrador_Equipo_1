@@ -34,9 +34,8 @@ class ApiServiceClass {
       delete updatedConfig.body;
       return await this.axios[method](url, body, updatedConfig);
     } catch (error) {
-      console.log(error);
       if (error.response && error.response.data) {
-        console.log(error);
+        console.log(error.response.data.message + ' ' + error.response.data.status);
       }
       throw new ApiError({
         status: null,

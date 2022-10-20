@@ -33,7 +33,7 @@ export const AddCareerValidation = () => Yup.object().shape({
 export const schoolarLevelOptions = [
   { value: 'Sin elegir', label: 'sin elegir', isDisabled: true },
   { value: 'Bachillerato', label: 'Bachillerato' },
-  { value: 'Universitario', label: 'Universitario' }
+  { value: 'Universidad', label: 'Universidad' }
 ]
 export const centreScheduleOptions = [
   { value: 'Sin elegir', label: 'sin elegir', isDisabled: true },

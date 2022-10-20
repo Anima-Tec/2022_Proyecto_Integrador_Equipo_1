@@ -31,13 +31,10 @@ export default function FilterForm({filterData, filterCentre}) {
     },
   });
 
-  //crear otra prop para manejar la busqueda del centro y que se actualice asi, 
-  //tambien manejar que se actualice cuando le damos click al boton de busqueda
-
   const schoolarLevel = [
     { value: "all", label: "Todos" },
     { value: "Bachillerato", label: "Bachillerato" },
-    { value: "Universitario", label: "Universitario" },
+    { value: "Universidad", label: "Universidad" },
   ];
 
   const centreSchedule = [
@@ -85,12 +82,13 @@ export default function FilterForm({filterData, filterCentre}) {
       <div className="flex flex-col items-center h-full w-[400px] bg-firstBg text-white overflow-y-scroll">
         <h1 className="my-8 text-3xl">Filtrar</h1>
         <SearchButton
-            placeholder="Ingrese nombre del centro a buscar"
+            placeholder="Ingrese nombre del centro"
             centresName={centresNames.map((centre) => centre.centreName)}
             className={
               "dropdown flex w-4/5 h-14 min-h-[2.75rem] bg-secondBg rounded-md border-2 border-solid border-firstColor text-white justify-between mt-8"
             }
             searchValue={searchCentreName}
+            searchBar={true}
           />
         <form className="w-full h-full flex flex-col items-center mt-8" onSubmit={formik.handleSubmit}>
           <div className="w-4/5 flex flex-col">

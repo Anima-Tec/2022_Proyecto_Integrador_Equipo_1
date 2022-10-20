@@ -102,9 +102,13 @@ export class CareerPublicDAO {
             if (res?.[0] !== undefined) {
               await Promise.all(
                 res.map((career) => this.getCareerById(career.idCareer))
-              ).then((careers) => resolve(careers));
+              )
+                .then((careers) => resolve(careers))
+                .catch((err) => {
+                  resolve([]);
+                });
             }
-            resolve([]); // else reject(Error("No_careers"));
+            resolve([]);
           }
         }
       );

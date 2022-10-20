@@ -69,7 +69,7 @@ export class CentrePublicDAO {
   getAllCentres(): Promise<Centre[]> {
     return new Promise((resolve, reject) => {
       dbPublic.query<CentreDB[]>(
-        "SELECT * FROM CENTRES_VW",
+        "SELECT idCentre FROM CENTRES_VW",
         async (err, res) => {
           if (err) reject(err);
           else {
@@ -177,7 +177,6 @@ export class CentrePublicDAO {
     const centres: Centre[] = [];
     return new Promise((resolve, reject) => {
       dbPublic.query<CentreDB[]>(queryFilter, queryParams, (err, res) => {
-
         if (err) reject(err);
         else {
           res.forEach((cen) => {
