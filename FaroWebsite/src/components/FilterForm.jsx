@@ -21,8 +21,8 @@ export default function FilterForm({filterData, filterCentre}) {
   const formik = useFormik({
     initialValues: {
       selectedCareer: 'all',
-      centreSchedules: 'all',
-      idCareer: 'all',
+      centreSchedule: 'all',
+      career: 'all',
       free: 'all',
       schoolarLevel: 'all',
     },
