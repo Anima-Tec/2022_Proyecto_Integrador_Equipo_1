@@ -61,7 +61,6 @@ export default class CentreController {
       body,
       header
     );
-    console.log(Response);
     return response.status;
   }
 
@@ -84,10 +83,9 @@ export default class CentreController {
   }
 
   static async getCentresByFilter(values) {
-    const response = await ApiService.get(API_ROUTES.CENTRE_BY_FILTER(addQueryParams(values)))
-    const centres = []
-    response.data.map(centre => ApiService.get(API_ROUTES.CENTRE(centre.idCentre)).then(res => centres.push(new Centre(CentreSerializer.deSerializeCentre(res.data)))))
-    return centres
+    const queryParams = addQueryParams(values)
+    const response = await ApiService.get(API_ROUTES.CENTRE_BY_FILTER(queryParams))
+    return response.data
   }
 }
 

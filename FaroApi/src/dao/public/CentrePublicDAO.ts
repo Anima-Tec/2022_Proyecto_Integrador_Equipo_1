@@ -176,13 +176,18 @@ export class CentrePublicDAO {
   getCentresByFilter(queryFilter: string, queryParams: any[]) {
     const centres: Centre[] = [];
     return new Promise((resolve, reject) => {
-      dbPublic.query<CentreDB[]>(queryFilter, queryParams, (err, res) => {
+      dbPublic.query<CentreDB[]>(queryFilter, queryParams, async (err, res) => {
         if (err) reject(err);
         else {
+          /*
           res.forEach((cen) => {
             centres.push(new Centre(cen.idCentre, cen.centreName));
-          });
+          });*/
+          const centres = await Promise.all(
+            res.map((centre) => this.getCentre(centre.idCentre))
+          );
           resolve(centres);
+        
         }
       });
     });

@@ -136,7 +136,7 @@ const CreateCentre = () => {
                     {((formik.touched.addressStreet &&
                       formik.errors.addressStreet) ||
                       (formik.touched.addressNumber &&
-                        formik.errors.addressNumber)) && (
+                        formik.errors.addressNumber)) && !addressState &&(
                       <div className="relative">
                         <p className="errorMessage absolute">
                           La Direccion no es valida

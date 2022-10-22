@@ -26,7 +26,6 @@ const AdminLogIn = () => {
   useEffect(() => {
     if (validationState) {
       localStorage.setItem("islogged", true)
-      console.log(validationState)
       setTimeout(() => {
         navigate("/database-filler")
       },1000)

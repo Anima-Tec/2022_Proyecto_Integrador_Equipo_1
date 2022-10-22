@@ -25,6 +25,7 @@ const EditCentre = () => {
   const [showCareers, setShowCareers] = useState(false)
   const [centreUpdated, setCentreUpdated] = useState(false)
   const [showToast, setShowToast] = useState(null)
+  const [addressState, setAddressState] = useState(false)
   let navigate = useNavigate()
 
   useEffect(() => {
@@ -55,23 +56,28 @@ const EditCentre = () => {
 
     onSubmit: async (values) => {
       const parsedValues = await parseCentreFormValues(values)
-      CentreController.updateCentre(centreValues.idCentre, parsedValues)
-        .then((response) => {
-          if (response === 200) {
-            setCentreUpdated(true)
-            setShowToast(true)
-            handleResetForm()
-          } else {
-            setCentreUpdated(false)
-            setShowToast(true)
-          }
-        })
-        .catch((err) => {
-          if (err.status === 401) {
-            navigate("/login")
-          }
-        })
-    },
+      if (parsedValues.latitude && parsedValues.longitude !== undefined) {
+        setAddressState(false)
+        CentreController.updateCentre(centreValues.idCentre, parsedValues)
+          .then((response) => {
+            if (response === 200) {
+              setCentreUpdated(true)
+              setShowToast(true)
+              handleResetForm()
+            } else {
+              setCentreUpdated(false)
+              setShowToast(true)
+            }
+          })
+          .catch((err) => {
+            if (err.status === 401) {
+              navigate("/login")
+            }
+          })
+    }else{
+      setAddressState(true)
+    }
+  }
   })
   const searchCentreName = async (searchValue) => {
     const centres = centresNames.map((centre) => centre.centreName)
@@ -171,41 +177,44 @@ const EditCentre = () => {
                 Dirección
               </label>
               <div className="w-full flex flex">
-                <div className="w-4/5 flex flex-col">
-                  <input
-                    className="w-full h-11 pl-4 bg-secondBg rounded-l-md border-2 border-firstColor"
-                    name="addressStreet"
-                    placeholder="Agregar dirección del centro"
-                    onChange={formik.handleChange}
-                    value={formik.values.addressStreet}
-                    type="text"
-                  />
-                  {formik.touched.addressStreet && formik.errors.addressStreet && (
-                    <div className="relative">
-                      <p className="errorMessage absolute">
-                        {formik.errors.addressStreet}
-                      </p>
-                    </div>
-                  )}
+                  <div className="w-4/5 flex flex-col">
+                    <input
+                      className="w-full h-11 pl-4 bg-secondBg rounded-l-md border-2 border-firstColor"
+                      name="addressStreet"
+                      placeholder="Agregar dirección del centro"
+                      onChange={formik.handleChange}
+                      value={formik.values.addressStreet}
+                      type="text"
+                    />
+                    {((formik.touched.addressStreet &&
+                      formik.errors.addressStreet) ||
+                      (formik.touched.addressNumber &&
+                        formik.errors.addressNumber)) && !addressState && (
+                      <div className="relative">
+                        <p className="errorMessage absolute">
+                          La Direccion no es valida
+                        </p>
+                      </div>
+                    )}
+                    {addressState && (
+                      <div className="relative">
+                        <p className="errorMessage absolute">
+                          Direccion incorrecta, inserte otra
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                  <div className="w-auto flex flex-col">
+                    <input
+                      className="w-16 h-11 pl-2 bg-secondBg rounded-r-md border-2 border-firstColor"
+                      name="addressNumber"
+                      placeholder="Puerta"
+                      onChange={formik.handleChange}
+                      value={formik.values.addressNumber}
+                      type="number"
+                    />
+                  </div>
                 </div>
-                <div className="w-auto flex flex-col">
-                  <input
-                    className="w-16 h-11 pl-2 bg-secondBg rounded-r-md border-2 border-firstColor"
-                    name="addressNumber"
-                    placeholder="Puerta"
-                    onChange={formik.handleChange}
-                    value={formik.values.addressNumber}
-                    type="number"
-                  />
-                  {formik.touched.addressNumber && formik.errors.addressNumber && (
-                    <div>
-                      <p className="errorMessage absolute">
-                        {formik.errors.addressNumber}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
             </div>
             <div className="w-4/5 flex flex-col row-start-3">
               <label className="text-base font-normal mb-2" htmlFor="free">

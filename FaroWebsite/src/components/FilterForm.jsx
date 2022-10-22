@@ -21,8 +21,8 @@ export default function FilterForm({filterData, filterCentre}) {
   const formik = useFormik({
     initialValues: {
       selectedCareer: 'all',
-      centreSchedule: 'all',
-      career: 'all',
+      centreSchedules: 'all',
+      idCareer: 'all',
       free: 'all',
       schoolarLevel: 'all',
     },
@@ -37,7 +37,7 @@ export default function FilterForm({filterData, filterCentre}) {
     { value: "Universidad", label: "Universidad" },
   ];
 
-  const centreSchedule = [
+  const centreSchedules = [
     { value: "all", label: "Todos" },
     { value: "Vespertino", label: "Vespertino" },
     { value: "Matutino", label: "Matutino" },
@@ -55,10 +55,10 @@ export default function FilterForm({filterData, filterCentre}) {
     const getCareers = async () => {
       let valueLabel = []
       await CareerController.getAllCareers()
-        .then((response) => response.map(career => 
+        .then((response) => response.map(idCareer => 
           valueLabel.push({
-            value: career.idCareer,
-            label: career.careerName
+            value: idCareer.idCareer,
+            label: idCareer.careerName
           })))
       setCareersFormikOp(valueLabel)
     }
@@ -106,17 +106,17 @@ export default function FilterForm({filterData, filterCentre}) {
           <div className="w-4/5 flex flex-col mt-6">
             <label
               className="text-base font-normal mb-2"
-              htmlFor="centreSchedule"
+              htmlFor="centreSchedules"
             >
               Horarios
             </label>
             <CustomSelect
               defaultValue="no select"
-              name={"centreSchedule"}
-              options={centreSchedule}
-              value={formik.values.centreSchedule}
+              name={"centreSchedules"}
+              options={centreSchedules}
+              value={formik.values.centreSchedules}
               onChange={(value) =>
-                formik.setFieldValue("centreSchedule", value.value)
+                formik.setFieldValue("centreSchedules", value.value)
               }
               placeholder={"Horarios"}
             />
@@ -128,9 +128,9 @@ export default function FilterForm({filterData, filterCentre}) {
             <CustomSelect
               name={"SelectedCareer"}
               options={careersOptions}
-              value={formik.values.career}
+              value={formik.values.idCareer}
               onChange={(value) =>
-                formik.setFieldValue("career", value.value)
+                formik.setFieldValue("idCareer", value.value)
               }
               placeholder={"Carreras"}
               className="text-white"

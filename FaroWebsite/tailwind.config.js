@@ -47,8 +47,9 @@ module.exports = {
        'firstBg': '#20233C',
        'secondBg': '#383B50',
        'errorsColor': '#D83A52',
-       'grayColor:': '#C5C7D0',
        'placeHolderColor': '#9CA3AF',
+       'grayColor:': '#babdc2',
+       'secondGrayColor': '#dbdbdb',
        'blackOpacity': 'rgba(0, 0, 0,.8)',
        'alertColor': '#EE9B00'
       }

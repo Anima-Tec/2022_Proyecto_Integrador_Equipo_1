@@ -4,12 +4,13 @@ import Farologo from "../assets/images/Farologo.png";
 import Object from "../assets/images/Object.svg"
 import moreInformation from "../assets/images/moreInformation.svg";
 import NavBar from '../components/NavBar';
+import { Player } from '@lottiefiles/react-lottie-player';
 
  const AboutPage = () => {
   return (
     <div className='w-screen h-screen backgroundAboutUs no-scrollbar text-white min-h-sm overflow-scroll'>
         <NavBar/>
-        <div>
+        <div className="flex">
           <div className='pl-32 pt-32'>
             <h1 className='text-5xl ml-8'>
               Faro ayuda a los estudiantes<br/>
@@ -20,12 +21,20 @@ import NavBar from '../components/NavBar';
               donde estudiar o simplemente cuales son las opciones, ahí es donde<br/>
               faro nos ayuda.
             </p>
-            <Link to="/"> <button className='text-white button ml-8 mt-8'> Empezar a buscar </button> </Link>
+            <Link to="/"> <button className='text-white startSearchButton ml-8 mt-8'> Empezar a buscar </button> </Link>
           </div>
+          <section className="mx-auto">
+            <Player
+              autoplay
+              loop
+              src="https://lottie.host/43f820e1-7c05-4ce7-8197-99ee5008de6c/MWOrPNeQa4.json"
+              style={{ height: '30rem', width: '30rem'}}
+            />
+          </section>
         </div>
-          <div className='w-85% flex justify-around mx-20 mt-40 '>
+          <div className='w-85% flex justify-around items-start mx-20 mt-32 '>
             <div className='w-64'>
-             <div className='flex'>
+             <div className='flex items-center'>
                 <img src={Farologo}  alt='Faro Logo' className='w-11'/>
                 <h3 className='text-2xl'>
                   ¿Qué es Faro?
@@ -38,7 +47,7 @@ import NavBar from '../components/NavBar';
               estudiar o donde.
             </div>
             <div className='w-64'>
-              <div className='flex'>
+              <div className='flex items-center'>
                 <img src={Object} alt="Our Objective" className='w-16'/>
                 <h3 className='text-2xl'>
                   Nuestro objetivo
@@ -51,7 +60,7 @@ import NavBar from '../components/NavBar';
               diferencia en el país.
             </div>
             <div className='w-64'>
-              <div className='flex'>
+              <div className='flex items-center'>
                 <img src={moreInformation} alt='More Information' className='w-11'/>
                 <h3 className='text-2xl'>
                   Más información

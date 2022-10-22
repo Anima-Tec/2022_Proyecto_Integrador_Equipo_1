@@ -34,9 +34,9 @@ const SearchButton = ({ placeholder, centresName, searchValue, className, clearV
   if (searchBar) {
     return(
       <div className="flex items-center border-b-2 border-firstColor border-solid dropdown">
-        <MagnifyingGlassIcon className="w-8"/>
+        <MagnifyingGlassIcon className="w-6"/>
           <input
-          className="w-fulltext-white bg-transparent "
+          className="w-fulltext-white bg-transparent"
           placeholder={placeholder}
           onChange={handleSearch}
         />
@@ -44,6 +44,7 @@ const SearchButton = ({ placeholder, centresName, searchValue, className, clearV
         <ChevronDownIcon
           className="w-6 cursor-pointer text-white mr-2"
           onClick={() => setShowCentres(!showCentres)}
+          onBlur={() => setShowCentres(!showCentres)}
         />
       )}
       {(showCentres) && (
