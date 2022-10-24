@@ -107,7 +107,7 @@ const EditCentre = () => {
   const deleteCareer = (careerName) => {
     setCareers(
       careers.filter((career) => {
-        if (career.careerName === careerName && CareerSerializer.idCareer) {
+        if (career.careerName === careerName) {
           CareerController.deleteCareer(career.idCareer, centreValues.idCentre)
         }
         return career.careerName !== careerName

@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import CareerController from "../networking/controllers/Career-Controller";
 import CustomSelect from "../components/CustomSelect";
-import { checkIfExists } from "../utils/functions";
+import { checkIfExists, diffValue } from "../utils/functions";
 import CentreController from "../networking/controllers/Centre-Controller";
 import SearchButton from "./searchButton";
 
-export default function FilterForm({filterData, filterCentre}) {
+export default function FilterForm({filterData, filterCentre, clearFilters}) {
   const [careersFormikOp, setCareersFormikOp] = useState([{}]);
   const [centresNames, setCentresNames] = useState([]);
+  const [resetFilters, setResetFilters] = useState(false);
 
   useEffect(() => {
     async function fetchCentres() {
@@ -16,7 +17,7 @@ export default function FilterForm({filterData, filterCentre}) {
       setCentresNames(centres)
     }
     fetchCentres()
-  }, [])
+  }, [clearFilters])
 
   const formik = useFormik({
     initialValues: {
@@ -28,6 +29,10 @@ export default function FilterForm({filterData, filterCentre}) {
     },
     onSubmit: (values) => {
         filterData(values)
+        const searchBy = diffValue(values, 'all') 
+        if (searchBy.length > 0){
+          setResetFilters(true)
+        }
     },
   });
 
@@ -74,7 +79,14 @@ export default function FilterForm({filterData, filterCentre}) {
     if (checkIfExists(centres, searchValue)) {
       const values = await CentreController.getCentreByName(searchValue)
       filterCentre(values)
+      setResetFilters(true)
     }
+  }
+
+  const handleResetFilter = (value) => {
+    clearFilters(value)
+    setResetFilters(false)
+    formik.resetForm()
   }
 
   return (
@@ -89,6 +101,7 @@ export default function FilterForm({filterData, filterCentre}) {
             }
             searchValue={searchCentreName}
             searchBar={true}
+            clearValue={!resetFilters}
           />
         <form className="w-full h-full flex flex-col items-center mt-8" onSubmit={formik.handleSubmit}>
           <div className="w-4/5 flex flex-col">
@@ -159,6 +172,11 @@ export default function FilterForm({filterData, filterCentre}) {
             >
               Filtrar
             </button>
+            {resetFilters && (
+              <div className="cursor-pointer">
+                  <p onClick={() => handleResetFilter(true)}>Limpiar filtros</p>
+              </div>
+            )}
         </form>
       </div>
     </>

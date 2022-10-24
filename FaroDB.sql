@@ -1,7 +1,8 @@
 drop  database if exists FARO;
 create database FARO;
 use FARO;
--- create user 'DBAdmin'@'localhost' identified by 'deC3JGy4Pu';
+-- user 'DBAdmin'@'localhost' identified by 'deC3JGy4Pu';
+-- drop user 'DBAdmin'@'localhost';
 -- create user 'FaroUser'@'localhost'; 
 
 create table CENTRE(
@@ -149,6 +150,34 @@ Begin
         delete from CENTRE_CAREER where idCentre = idCentreP and idCareer = idCareerP;
     end if;
 End //
+delimiter ;
+
+create table SAVE(
+idSaveCareer int auto_increment,
+idCareer INT,
+careerName varchar(250) not null unique,
+careerDescription text not null,
+degree varChar(250) not null,
+duration varchar(50) not null,
+primary key (idSaveCareer)
+);
+
+create table SAVE_CAREER(
+idSaveCareer int,
+idCareer int,
+primary key(idSaveCareer),
+foreign key (idSaveCareer) references SAVE (idSaveCareer),
+foreign key (idCareer) references CAREER (idCareer)
+);
+
+delimiter //
+create trigger SAVE_CARRER_AI
+after insert on CAREER
+for each row
+begin
+	insert into SAVE(idSaveCareer, idCareer, careerName, careerDescription, degree, duration)
+		value (idSaveCareer, new.idCareer, new.careerName, new.careerDescription, new.degree, new.duration);
+end //
 delimiter ;
 
 /* ------------------------ Fin Procedures ------------------------ */

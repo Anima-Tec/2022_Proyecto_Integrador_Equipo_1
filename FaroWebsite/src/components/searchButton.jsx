@@ -39,6 +39,7 @@ const SearchButton = ({ placeholder, centresName, searchValue, className, clearV
           className="w-fulltext-white bg-transparent"
           placeholder={placeholder}
           onChange={handleSearch}
+          value={search}
         />
         {centresName?.length > 0 && (
         <ChevronDownIcon

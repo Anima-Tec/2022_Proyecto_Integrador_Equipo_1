@@ -9,23 +9,26 @@ const containerStyle = {
   zIndex: 10,
 };
 
-const center = {
+let center = {
   lat: -34.908812,
   lng: -56.190687,
 };
 
-function MyComponent({filterCentre, filters}) {
+function MyComponent({filterCentre, filters, clearFilters, clearState}) {
   const [info, setInfo] = useState(null);
   const [map, setMap] = useState(null);
   const [markers, setMarkers] = useState(null);
   const [modalInfo, setModalInfo] = useState(false);
 
   useEffect(() =>{
+    if (clearFilters) {
+      clearState(true)
+    }
     const getCentresCoords = async () => {
       setMarkers(await CentreController.getCentresCoordinates())
     }
     getCentresCoords()
-  },[])
+  },[clearFilters])
 
   useEffect(() => {
     if (filters){
@@ -46,7 +49,8 @@ function MyComponent({filterCentre, filters}) {
 
   const onLoad = useCallback(async function callback(map) {
     const bounds = new window.google.maps.LatLngBounds(center);
-    map.fitBounds(bounds);
+    center = bounds.getCenter();
+    map.setCenter(center);
     setMap(map);
   }, []);
 
@@ -59,6 +63,10 @@ function MyComponent({filterCentre, filters}) {
       const centre = await CentreController.getCentre(clicked.idCentre);
       setInfo(centre);
       setModalInfo(true)
+      center = {
+        lat: centre.latitude,
+        lng: centre.longitude
+      }
     }
     fetchData();
   };
